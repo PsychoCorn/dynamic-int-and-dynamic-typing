@@ -10,6 +10,7 @@ union VarData
     dynamic_int* intData;
     double* floatData;
     std::string* stringData;
+    bool* boolData;
 };
 
 enum class VarType
@@ -18,6 +19,7 @@ enum class VarType
     Int,
     Float,
     String,
+    Bool
 };
 
 
@@ -36,6 +38,7 @@ public:
     Variable(const int&);
     Variable(const double&);
     Variable(const char*);
+    Variable(const bool&);
     Variable(const Variable&);
     ~Variable();
     VarType getType() const;
