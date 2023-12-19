@@ -36,6 +36,12 @@ Variable::Variable(const char* strValue)
     type = VarType::String;
 }
 
+Variable::Variable(const bool& boolValue)
+{
+    data.boolData = new bool(boolValue);
+    type = VarType::Bool;
+}
+
 Variable::Variable(const Variable& varValue)
 {
     copyDataFromOther(varValue);
@@ -56,6 +62,10 @@ void Variable::copyDataFromOther(const Variable& other)
         
         case VarType::String:
             data.stringData = new std::string(*(other.getData().stringData));
+            break;
+
+        case VarType::Bool:
+            data.boolData = new bool(*(other.getData().boolData));
             break;
         
         default:
@@ -85,12 +95,19 @@ void Variable::clearData()
     case VarType::Int:
         delete data.intData;
         break;
+
     case VarType::Float:
         delete data.floatData;
         break;
+
     case VarType::String:
         delete data.stringData;
         break;
+
+    case VarType::Bool:
+        delete data.boolData;
+        break;
+        
     default:
         break;
     }
@@ -103,18 +120,22 @@ Variable& Variable::operator=(const Variable& other)
     {
         switch (type)
         {
-        case (VarType::Int):
+        case VarType::Int:
             *(data.intData) = *(other.getData().intData);
             break;
         
-        case (VarType::Float):
+        case VarType::Float:
             *(data.floatData) = *(other.getData().floatData);
             break;
         
-        case (VarType::String):
+        case VarType::String:
             *(data.stringData) = *(other.getData().stringData);
             break;
-        
+
+        case VarType::Bool:
+            *(data.boolData) = *(other.getData().boolData);
+            break;
+
         default:
             break;
         }
