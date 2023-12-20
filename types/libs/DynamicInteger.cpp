@@ -36,6 +36,21 @@ char* DynamicInteger::strGetNumber() const
     return mpz_get_str(nullptr, 10, value);
 }
 
+long long DynamicInteger::longLongGetNumber(bool isSigned) const
+{
+    return ((isSigned) ? (mpz_get_si(value)) : (mpz_get_ui(value)));
+}
+
+double DynamicInteger::doubleGetNumber() const
+{
+    return mpz_get_d(value);
+}
+
+bool DynamicInteger::boolGetNumber() const
+{
+    return mpz_cmp_ui(value, 0) != 0;
+}
+
 DynamicInteger DynamicInteger::operator+(const DynamicInteger& other) const
 {
     DynamicInteger result;
