@@ -15,6 +15,9 @@ public:
     DynamicInteger(const DynamicInteger&);
     ~DynamicInteger();
     char* strGetNumber() const;
+    double doubleGetNumber() const;
+    long long longLongGetNumber(bool = true) const;
+    bool boolGetNumber() const;
     DynamicInteger& operator=(const DynamicInteger&);
     DynamicInteger operator+(const DynamicInteger&) const;
     DynamicInteger operator-(const DynamicInteger&) const;
