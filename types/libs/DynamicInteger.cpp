@@ -5,6 +5,11 @@ DynamicInteger::DynamicInteger()
     mpz_init(value);
 }
 
+DynamicInteger::DynamicInteger(const int& intValue)
+{
+    mpz_init_set_si(value, intValue);
+}
+
 DynamicInteger::DynamicInteger(const long long& intValue)
 {
     mpz_init_set_si(value, intValue);

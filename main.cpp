@@ -4,10 +4,7 @@
 
 int main()
 {
-    dynamic_int n_d = -5;
-    float d_s = n_d.doubleGetNumber();
-    d_s += 0.5f;
-    int n_s = n_d.longLongGetNumber();
-    std::cout << d_s << " " << n_d.longLongGetNumber(false);
+    var test;
+    std::cout << test;
     return 0;
 }

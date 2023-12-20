@@ -10,6 +10,7 @@ private:
     mpz_t value;
 public:
     DynamicInteger();
+    DynamicInteger(const int&);
     DynamicInteger(const long long&);
     DynamicInteger(const char*);
     DynamicInteger(const DynamicInteger&);

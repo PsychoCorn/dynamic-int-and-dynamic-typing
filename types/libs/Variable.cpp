@@ -147,3 +147,33 @@ Variable& Variable::operator=(const Variable& other)
     }
     return *this;
 }
+
+std::ostream& operator<<(std::ostream& os, const var& obj)
+{
+    switch (obj.getType())
+    {
+        case VarType::Int:
+            os << *(obj.getData().intData);
+            break;
+        
+        case VarType::Float:
+            os << *(obj.getData().floatData);
+            break;
+        
+        case VarType::String:
+            os << *(obj.getData().stringData);
+            break;
+
+        case VarType::Bool:
+            os << *(obj.getData().boolData);
+            break;
+
+        case VarType::None:
+        os << "None";
+        break;
+        
+        default:
+            break;
+    }
+    return os;
+}

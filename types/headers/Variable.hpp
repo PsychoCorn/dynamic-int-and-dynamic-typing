@@ -48,5 +48,6 @@ public:
 
 typedef Variable var;
 
+std::ostream& operator<<(std::ostream&, const var&);
 
 #endif
