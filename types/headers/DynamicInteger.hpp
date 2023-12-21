@@ -13,6 +13,7 @@ public:
     DynamicInteger(const int&);
     DynamicInteger(const long long&);
     DynamicInteger(const char*);
+    DynamicInteger(const double&);
     DynamicInteger(const DynamicInteger&);
     ~DynamicInteger();
     char* strGetNumber() const;
@@ -39,10 +40,10 @@ public:
     DynamicInteger operator^(const DynamicInteger&) const;
     DynamicInteger operator<<(const long long&) const;
     DynamicInteger operator>>(const long long&) const;
+    friend std::ostream& operator<<(std::ostream&, const DynamicInteger&);
+    friend std::istream& operator>>(std::istream&, DynamicInteger&);
 };
 
 typedef DynamicInteger dynamic_int;
-
-std::ostream& operator<<(std::ostream&, const dynamic_int&);
 
 #endif

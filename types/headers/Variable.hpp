@@ -44,10 +44,24 @@ public:
     VarType getType() const;
     VarData getData() const;
     Variable& operator=(const Variable&);
+    Variable& toInt();
+    Variable& toFloat();
+    Variable& toString();
+    Variable& toBool();
+    friend Variable toInt(const Variable&);
+    friend Variable toInt(const dynamic_int&);
+    friend Variable toInt(const long long&);
+    friend Variable toInt(const int& = 0);
+    friend Variable toInt(const double&);
+    friend Variable toInt(const char*);
+    friend Variable toInt(const bool&);
+    friend Variable toFloat(const Variable&);
+    friend Variable toString(const Variable&);
+    friend Variable toBool(const Variable&);
+    friend std::ostream& operator<<(std::ostream&, const Variable&);
+    friend std::istream& operator>>(std::istream&, Variable&);
 };
 
 typedef Variable var;
-
-std::ostream& operator<<(std::ostream&, const var&);
 
 #endif

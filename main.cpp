@@ -4,7 +4,8 @@
 
 int main()
 {
-    var test;
-    std::cout << test;
+    var n;
+    n.toInt();
+    std::cout << n << std::endl;
     return 0;
 }

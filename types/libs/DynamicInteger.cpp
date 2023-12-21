@@ -20,6 +20,11 @@ DynamicInteger::DynamicInteger(const char* strValue)
     mpz_init_set_str(value, strValue, 10);
 }
 
+DynamicInteger::DynamicInteger(const double& floatValue)
+{
+    mpz_init_set_si(value, floatValue);
+}
+
 DynamicInteger::DynamicInteger(const DynamicInteger& dynIntValue)
 {
     mpz_init_set_str(value, dynIntValue.strGetNumber(), 10);
@@ -182,4 +187,12 @@ DynamicInteger DynamicInteger::operator>>(const long long& shift) const {
     DynamicInteger result;
     mpz_tdiv_q_2exp(result.value, this->value, shift);
     return result;
+}
+
+std::istream& operator>>(std::istream& is, DynamicInteger& obj)
+{
+    std::string val;
+    is >> val;
+    obj = DynamicInteger(val.c_str());
+    return is;
 }
