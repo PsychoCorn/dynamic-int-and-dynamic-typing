@@ -238,6 +238,11 @@ Variable toInt(const Variable& obj)
     return obj;
 }
 
+Variable toInt(const dynamic_int& intVal)
+{
+    return Variable(intVal);
+}
+
 Variable& Variable::toFloat()
 {
      switch (type)

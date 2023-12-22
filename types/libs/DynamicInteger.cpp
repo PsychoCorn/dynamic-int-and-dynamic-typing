@@ -17,7 +17,10 @@ DynamicInteger::DynamicInteger(const long long& intValue)
 
 DynamicInteger::DynamicInteger(const char* strValue)
 {
-    mpz_init_set_str(value, strValue, 10);
+    if (mpz_init_set_str(value, strValue, 10) == -1)
+    {
+        throw std::invalid_argument("Invalid string argument");
+    }
 }
 
 DynamicInteger::DynamicInteger(const double& floatValue)
@@ -90,6 +93,10 @@ DynamicInteger DynamicInteger::operator*(const DynamicInteger& other) const
 
 DynamicInteger DynamicInteger::operator/(const DynamicInteger& other) const
 {
+    if (other == 0)
+    {
+        throw std::runtime_error("Division by zero!");
+    }
     DynamicInteger result;
     mpz_tdiv_q(result.value, this->value, other.value);
     return result;
@@ -132,8 +139,12 @@ bool DynamicInteger::operator!() const
 
 DynamicInteger DynamicInteger::operator%(const DynamicInteger& other) const
 {
+    if (other == 0)
+    {
+        throw std::runtime_error("Division by zero!");
+    }
     DynamicInteger result;
-    mpz_tdiv_r(result.value, this->value, other.value);
+    mpz_mod(result.value, this->value, other.value);
     return result;
 }
 DynamicInteger DynamicInteger::operator-() const
@@ -195,4 +206,90 @@ std::istream& operator>>(std::istream& is, DynamicInteger& obj)
     is >> val;
     obj = DynamicInteger(val.c_str());
     return is;
+}
+
+DynamicInteger& DynamicInteger::operator+=(const DynamicInteger& other)
+{
+    *this = *this + other;
+    return *this;
+}
+
+DynamicInteger& DynamicInteger::operator-=(const DynamicInteger& other)
+{
+    *this = *this - other;
+    return *this;
+}
+
+DynamicInteger& DynamicInteger::operator*=(const DynamicInteger& other)
+{
+    *this = *this * other;
+    return *this;
+}
+
+DynamicInteger& DynamicInteger::operator/=(const DynamicInteger& other)
+{
+    *this = *this / other;
+    return *this;
+}
+
+DynamicInteger& DynamicInteger::operator%=(const DynamicInteger& other)
+{
+    *this = *this % other;
+    return *this;
+}
+
+DynamicInteger& DynamicInteger::operator>>=(const DynamicInteger& other)
+{
+    *this = *this >> other.longLongGetNumber();
+    return *this;
+}
+
+DynamicInteger& DynamicInteger::operator<<=(const DynamicInteger& other)
+{
+    *this = *this << other.longLongGetNumber();
+    return *this;
+}
+
+DynamicInteger& DynamicInteger::operator&=(const DynamicInteger& other)
+{
+    *this = *this & other;
+    return *this;
+}
+
+DynamicInteger& DynamicInteger::operator|=(const DynamicInteger& other)
+{
+    *this = *this | other;
+    return *this;
+}
+
+DynamicInteger& DynamicInteger::operator^=(const DynamicInteger& other)
+{
+    *this = *this ^ other;
+    return *this;
+}
+
+DynamicInteger& DynamicInteger::operator++()
+{
+    *this = *this + 1;
+    return *this;
+}
+
+DynamicInteger& DynamicInteger::operator--()
+{
+    *this = *this - 1;
+    return *this;
+}
+
+DynamicInteger DynamicInteger::operator++(int)
+{
+    DynamicInteger temp = *this;
+    *this = *this + 1;
+    return temp;
+}
+
+DynamicInteger DynamicInteger::operator--(int)
+{
+    DynamicInteger temp = *this;
+    *this = *this - 1;
+    return temp;
 }

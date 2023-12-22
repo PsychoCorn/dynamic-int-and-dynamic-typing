@@ -49,12 +49,6 @@ public:
     Variable& toString();
     Variable& toBool();
     friend Variable toInt(const Variable&);
-    friend Variable toInt(const dynamic_int&);
-    friend Variable toInt(const long long&);
-    friend Variable toInt(const int& = 0);
-    friend Variable toInt(const double&);
-    friend Variable toInt(const char*);
-    friend Variable toInt(const bool&);
     friend Variable toFloat(const Variable&);
     friend Variable toString(const Variable&);
     friend Variable toBool(const Variable&);
@@ -63,5 +57,8 @@ public:
 };
 
 typedef Variable var;
+
+Variable toInt(const dynamic_int& = 0);
+Variable toInt(const char*);
 
 #endif
