@@ -52,11 +52,12 @@ public:
     DynamicInteger operator&(const DynamicInteger&) const;
     DynamicInteger operator|(const DynamicInteger&) const;
     DynamicInteger operator^(const DynamicInteger&) const;
-    DynamicInteger operator<<(const long long&) const;
-    DynamicInteger operator>>(const long long&) const;
-    friend std::ostream& operator<<(std::ostream&, const DynamicInteger&);
+    DynamicInteger operator<<(const DynamicInteger&) const;
+    DynamicInteger operator>>(const DynamicInteger&) const;
     friend std::istream& operator>>(std::istream&, DynamicInteger&);
 };
+
+std::ostream& operator<<(std::ostream&, const DynamicInteger&);
 
 typedef DynamicInteger dynamic_int;
 

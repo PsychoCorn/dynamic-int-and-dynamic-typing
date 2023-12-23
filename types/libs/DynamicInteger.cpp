@@ -182,21 +182,21 @@ DynamicInteger DynamicInteger::operator^(const DynamicInteger& other) const {
     return result;
 }
 
-DynamicInteger DynamicInteger::operator<<(const long long& shift) const {
+DynamicInteger DynamicInteger::operator<<(const DynamicInteger& shift) const {
     if (shift < 0) {
         throw std::runtime_error("Negative shift value");
     }
     DynamicInteger result;
-    mpz_mul_2exp(result.value, this->value, shift);
+    mpz_mul_2exp(result.value, this->value, mpz_get_si(shift.value));
     return result;
 }
 
-DynamicInteger DynamicInteger::operator>>(const long long& shift) const {
+DynamicInteger DynamicInteger::operator>>(const DynamicInteger& shift) const {
     if (shift < 0) {
         throw std::runtime_error("Negative shift value");
     }
     DynamicInteger result;
-    mpz_tdiv_q_2exp(result.value, this->value, shift);
+    mpz_tdiv_q_2exp(result.value, this->value, mpz_get_si(shift.value));
     return result;
 }
 
@@ -240,13 +240,13 @@ DynamicInteger& DynamicInteger::operator%=(const DynamicInteger& other)
 
 DynamicInteger& DynamicInteger::operator>>=(const DynamicInteger& other)
 {
-    *this = *this >> other.longLongGetNumber();
+    *this = *this >> other;
     return *this;
 }
 
 DynamicInteger& DynamicInteger::operator<<=(const DynamicInteger& other)
 {
-    *this = *this << other.longLongGetNumber();
+    *this = *this << other;
     return *this;
 }
 
