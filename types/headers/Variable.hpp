@@ -60,5 +60,11 @@ typedef Variable var;
 
 Variable toInt(const dynamic_int& = 0);
 Variable toInt(const char*);
+Variable toFloat(const dynamic_int&);
+Variable toFloat(const double&);
+Variable toFloat(const char*);
+Variable toFloat(const long long&);
+Variable toFloat(const int&);
+
 
 #endif

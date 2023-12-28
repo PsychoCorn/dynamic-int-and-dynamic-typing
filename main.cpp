@@ -4,10 +4,8 @@
 
 int main()
 {
-    dynamic_int n = 1 << 1;
-    n <<= 4;
-    std::cout << n << std::endl;
-    n >>= 1;
-    std::cout << n << std::endl;
+    var test = true;
+    test = toFloat(test);
+    std::cout << test << std::endl;
     return 0;
 }
