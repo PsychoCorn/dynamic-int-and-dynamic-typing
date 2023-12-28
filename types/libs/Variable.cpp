@@ -12,13 +12,13 @@ Variable::Variable(const dynamic_int& intValue)
     type = VarType::Int;
 }
 
-Variable::Variable(const long long& intValue)
+Variable::Variable(const int& intValue)
 {
     data.intData = new dynamic_int(intValue);
     type = VarType::Int;
 }
 
-Variable::Variable(const int& intValue)
+Variable::Variable(const long long& intValue)
 {
     data.intData = new dynamic_int(intValue);
     type = VarType::Int;
@@ -214,18 +214,18 @@ Variable& Variable::toInt()
 
 Variable toInt(const Variable& obj)
 {
-    switch (obj.type)
+    switch (obj.getType())
     {
     case VarType::Float:
-        return Variable(dynamic_int(*(obj.data.floatData)));
+        return Variable(dynamic_int(*(obj.getData().floatData)));
         break;
 
     case VarType::String:
-        return Variable(dynamic_int(obj.data.stringData->c_str()));
+        return Variable(dynamic_int(obj.getData().stringData->c_str()));
         break;
     
     case VarType::Bool:
-        return Variable(*(obj.data.boolData) ? 1 : 0);
+        return Variable(*(obj.getData().boolData) ? 1 : 0);
         break;
 
     case VarType::None:
@@ -236,16 +236,6 @@ Variable toInt(const Variable& obj)
         break;
     }
     return obj;
-}
-
-Variable toInt(const dynamic_int& intVal)
-{
-    return Variable(intVal);
-}
-
-Variable toInt(const char* stringVal)
-{
-    return Variable(dynamic_int(stringVal));
 }
 
 Variable& Variable::toFloat()
@@ -274,49 +264,76 @@ Variable& Variable::toFloat()
     return *this;
 }
 
-Variable toFloat(const dynamic_int& intVal)
-{
-    return Variable(intVal.doubleGetNumber());
-}
-
-Variable toFloat(const double& floatVal)
-{
-    return Variable(floatVal);
-}
-
-Variable toFloat(const long long& intVal)
-{
-    return Variable(float(intVal));
-}
-
-Variable toFloat(const int& intVal)
-{
-    return Variable(float(intVal));
-}
-
-Variable toFloat(const char* stringVal)
-{
-    return Variable(std::stod(stringVal));
-}
-
 Variable toFloat(const Variable& obj)
 {
-    switch (obj.type)
+    switch (obj.getType())
     {
     case VarType::Int:
-        return Variable(obj.data.intData->doubleGetNumber());
+        return Variable(obj.getData().intData->doubleGetNumber());
         break;
 
     case VarType::String:
-        return Variable(std::stod(obj.data.stringData->c_str()));
+        return Variable(std::stod(obj.getData().stringData->c_str()));
         break;
     
     case VarType::Bool:
-        return Variable(*(obj.data.boolData) ? 1.0f : 0.0f);
+        return Variable(*(obj.getData().boolData) ? 1.0f : .0f);
         break;
 
     case VarType::None:
-        return Variable(0.0f);
+        return Variable(.0f);
+        break;
+
+    default:
+        break;
+    }
+    return obj;
+}
+
+Variable& Variable::toString()
+{
+    switch (type)
+    {
+    case VarType::Int:
+        *this = Variable(data.intData->strGetNumber());
+        break;
+
+    case VarType::Float:
+        *this = Variable(std::to_string(*(data.floatData)).c_str());
+        break;
+    
+    case VarType::Bool:
+        *this = Variable(std::to_string(*(data.boolData)).c_str());
+        break;
+
+    case VarType::None:
+        *this = Variable("");
+        break;
+
+    default:
+        break;
+    }
+    return *this;
+}
+
+Variable toString(const Variable& obj)
+{
+    switch (obj.getType())
+    {
+    case VarType::Int:
+        return Variable(obj.getData().intData->strGetNumber());
+        break;
+
+    case VarType::Float:
+        return Variable(std::to_string(*(obj.getData().floatData)).c_str());
+        break;
+    
+    case VarType::Bool:
+        return Variable(std::to_string(*(obj.getData().boolData)).c_str());
+        break;
+
+    case VarType::None:
+        return Variable("");
         break;
 
     default:

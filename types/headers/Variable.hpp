@@ -34,9 +34,9 @@ private:
 public:
     Variable();
     Variable(const dynamic_int&);
-    Variable(const long long&);
     Variable(const int&);
     Variable(const double&);
+    Variable(const long long&);
     Variable(const char*);
     Variable(const bool&);
     Variable(const Variable&);
@@ -48,23 +48,15 @@ public:
     Variable& toFloat();
     Variable& toString();
     Variable& toBool();
-    friend Variable toInt(const Variable&);
-    friend Variable toFloat(const Variable&);
-    friend Variable toString(const Variable&);
     friend Variable toBool(const Variable&);
     friend std::ostream& operator<<(std::ostream&, const Variable&);
     friend std::istream& operator>>(std::istream&, Variable&);
 };
 
+Variable toInt(const Variable& = 0);
+Variable toFloat(const Variable& = .0f);
+Variable toString(const Variable& = "");
+
 typedef Variable var;
-
-Variable toInt(const dynamic_int& = 0);
-Variable toInt(const char*);
-Variable toFloat(const dynamic_int&);
-Variable toFloat(const double&);
-Variable toFloat(const char*);
-Variable toFloat(const long long&);
-Variable toFloat(const int&);
-
 
 #endif

@@ -64,10 +64,10 @@ bool DynamicInteger::boolGetNumber() const
     return mpz_cmp_ui(value, 0) != 0;
 }
 
-DynamicInteger DynamicInteger::operator+(const DynamicInteger& other) const
+DynamicInteger operator+(const DynamicInteger& num1, const DynamicInteger& num2)
 {
     DynamicInteger result;
-    mpz_add(result.value, this->value, other.value);
+    mpz_add(result.value, num1.value, num2.value);
     return result;
 }
 
@@ -77,59 +77,59 @@ DynamicInteger& DynamicInteger::operator=(const DynamicInteger& other)
     return *this;
 }
 
-DynamicInteger DynamicInteger::operator-(const DynamicInteger& other) const
+DynamicInteger operator-(const DynamicInteger& num1, const DynamicInteger& num2)
 {
     DynamicInteger result;
-    mpz_sub(result.value, this->value, other.value);
+    mpz_sub(result.value, num1.value, num2.value);
     return result;
 }
 
-DynamicInteger DynamicInteger::operator*(const DynamicInteger& other) const
+DynamicInteger operator*(const DynamicInteger& num1, const DynamicInteger& num2)
 {
     DynamicInteger result;
-    mpz_mul(result.value, this->value, other.value);
+    mpz_mul(result.value, num1.value, num2.value);
     return result;
 }
 
-DynamicInteger DynamicInteger::operator/(const DynamicInteger& other) const
+DynamicInteger operator/(const DynamicInteger& num1, const DynamicInteger& num2)
 {
-    if (other == 0)
+    if (num2 == 0)
     {
         throw std::runtime_error("Division by zero!");
     }
     DynamicInteger result;
-    mpz_tdiv_q(result.value, this->value, other.value);
+    mpz_tdiv_q(result.value, num1.value, num2.value);
     return result;
 }
 
-bool DynamicInteger::operator<(const DynamicInteger& other) const
+bool operator<(const DynamicInteger& num1, const DynamicInteger& num2)
 {
-    return mpz_cmp(this->value, other.value) < 0;
+    return mpz_cmp(num1.value, num2.value) < 0;
 }
 
-bool DynamicInteger::operator>(const DynamicInteger& other) const
+bool operator>(const DynamicInteger& num1, const DynamicInteger& num2)
 {
-    return mpz_cmp(this->value, other.value) > 0;
+    return mpz_cmp(num1.value, num2.value) > 0;
 }
 
-bool DynamicInteger::operator==(const DynamicInteger& other) const
+bool operator==(const DynamicInteger& num1, const DynamicInteger& num2)
 {
-    return mpz_cmp(this->value, other.value) == 0;
+    return mpz_cmp(num1.value, num2.value) == 0;
 }
 
-bool DynamicInteger::operator!=(const DynamicInteger& other) const
+bool operator!=(const DynamicInteger& num1, const DynamicInteger& num2)
 {
-    return !(mpz_cmp(this->value, other.value) == 0);
+    return mpz_cmp(num1.value, num2.value) != 0;
 }
 
-bool DynamicInteger::operator<=(const DynamicInteger& other) const
+bool operator<=(const DynamicInteger& num1, const DynamicInteger& num2)
 {
-    return mpz_cmp(this->value, other.value) <= 0;
+    return mpz_cmp(num1.value, num2.value) <= 0;
 }
 
-bool DynamicInteger::operator>=(const DynamicInteger& other) const
+bool operator>=(const DynamicInteger& num1, const DynamicInteger& num2)
 {
-    return mpz_cmp(this->value, other.value) >= 0;
+    return mpz_cmp(num1.value, num2.value) >= 0;
 }
 
 bool DynamicInteger::operator!() const
@@ -137,14 +137,14 @@ bool DynamicInteger::operator!() const
     return this != 0;
 }
 
-DynamicInteger DynamicInteger::operator%(const DynamicInteger& other) const
+DynamicInteger operator%(const DynamicInteger& num1, const DynamicInteger& num2)
 {
-    if (other == 0)
+    if (num2 == 0)
     {
         throw std::runtime_error("Division by zero!");
     }
     DynamicInteger result;
-    mpz_mod(result.value, this->value, other.value);
+    mpz_mod(result.value, num1.value, num2.value);
     return result;
 }
 DynamicInteger DynamicInteger::operator-() const
@@ -164,39 +164,44 @@ DynamicInteger DynamicInteger::operator~() const
     return -result;
 }
 
-DynamicInteger DynamicInteger::operator&(const DynamicInteger& other) const {
+DynamicInteger operator&(const DynamicInteger& num1, const DynamicInteger& num2)
+{
     DynamicInteger result;
-    mpz_and(result.value, this->value, other.value);
+    mpz_and(result.value, num1.value, num2.value);
     return result;
 }
 
-DynamicInteger DynamicInteger::operator|(const DynamicInteger& other) const {
+DynamicInteger operator|(const DynamicInteger& num1, const DynamicInteger& num2)
+{
     DynamicInteger result;
-    mpz_ior(result.value, this->value, other.value);
+    mpz_ior(result.value, num1.value, num2.value);
     return result;
 }
 
-DynamicInteger DynamicInteger::operator^(const DynamicInteger& other) const {
+DynamicInteger operator^(const DynamicInteger& num1, const DynamicInteger& num2)
+{
     DynamicInteger result;
-    mpz_xor(result.value, this->value, other.value);
+    mpz_xor(result.value, num1.value, num2.value);
     return result;
 }
 
-DynamicInteger DynamicInteger::operator<<(const DynamicInteger& shift) const {
+DynamicInteger operator<<(const DynamicInteger& num, const DynamicInteger& shift)
+{
     if (shift < 0) {
         throw std::runtime_error("Negative shift value");
     }
     DynamicInteger result;
-    mpz_mul_2exp(result.value, this->value, mpz_get_si(shift.value));
+    mpz_mul_2exp(result.value, num.value, mpz_get_si(shift.value));
     return result;
 }
 
-DynamicInteger DynamicInteger::operator>>(const DynamicInteger& shift) const {
+DynamicInteger operator>>(const DynamicInteger& num, const DynamicInteger& shift)
+{
     if (shift < 0) {
         throw std::runtime_error("Negative shift value");
     }
     DynamicInteger result;
-    mpz_tdiv_q_2exp(result.value, this->value, mpz_get_si(shift.value));
+    mpz_tdiv_q_2exp(result.value, num.value, mpz_get_si(shift.value));
     return result;
 }
 
