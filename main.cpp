@@ -3,8 +3,8 @@
 
 int main()
 {
-    dynamic_int n;
-    n = 3 << dynamic_int(1);
-    std::cout << n << std::endl;
+    var a = -5;
+    std::cout << --a << std::endl;
+    std::cout << a << std::endl;
     return 0;
 }

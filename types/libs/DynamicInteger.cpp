@@ -1,5 +1,9 @@
 #include "../headers/DynamicInteger.hpp"
 
+#define ERR_MSG_DIVISION_BY_ZERO "Division by zero!" 
+#define ERR_MSG_NEGATIVE_SHIFT_VALUE "Negative shift value!"
+#define ERR_MSG_INVALID_STRING_ARG "Invalid string argument!"
+
 DynamicInteger::DynamicInteger()
 {
     mpz_init(value);
@@ -19,7 +23,7 @@ DynamicInteger::DynamicInteger(const char* strValue)
 {
     if (mpz_init_set_str(value, strValue, 10) == -1)
     {
-        throw std::invalid_argument("Invalid string argument");
+        throw std::invalid_argument(ERR_MSG_INVALID_STRING_ARG);
     }
 }
 
@@ -95,7 +99,7 @@ DynamicInteger operator/(const DynamicInteger& num1, const DynamicInteger& num2)
 {
     if (num2 == 0)
     {
-        throw std::runtime_error("Division by zero!");
+        throw std::runtime_error(ERR_MSG_DIVISION_BY_ZERO);
     }
     DynamicInteger result;
     mpz_tdiv_q(result.value, num1.value, num2.value);
@@ -134,14 +138,14 @@ bool operator>=(const DynamicInteger& num1, const DynamicInteger& num2)
 
 bool DynamicInteger::operator!() const
 {
-    return this != 0;
+    return *this == 0;
 }
 
 DynamicInteger operator%(const DynamicInteger& num1, const DynamicInteger& num2)
 {
     if (num2 == 0)
     {
-        throw std::runtime_error("Division by zero!");
+        throw std::runtime_error(ERR_MSG_DIVISION_BY_ZERO);
     }
     DynamicInteger result;
     mpz_mod(result.value, num1.value, num2.value);
@@ -188,7 +192,7 @@ DynamicInteger operator^(const DynamicInteger& num1, const DynamicInteger& num2)
 DynamicInteger operator<<(const DynamicInteger& num, const DynamicInteger& shift)
 {
     if (shift < 0) {
-        throw std::runtime_error("Negative shift value");
+        throw std::runtime_error(ERR_MSG_NEGATIVE_SHIFT_VALUE);
     }
     DynamicInteger result;
     mpz_mul_2exp(result.value, num.value, mpz_get_si(shift.value));
@@ -198,7 +202,7 @@ DynamicInteger operator<<(const DynamicInteger& num, const DynamicInteger& shift
 DynamicInteger operator>>(const DynamicInteger& num, const DynamicInteger& shift)
 {
     if (shift < 0) {
-        throw std::runtime_error("Negative shift value");
+        throw std::runtime_error(ERR_MSG_NEGATIVE_SHIFT_VALUE);
     }
     DynamicInteger result;
     mpz_tdiv_q_2exp(result.value, num.value, mpz_get_si(shift.value));
@@ -297,4 +301,14 @@ DynamicInteger DynamicInteger::operator--(int)
     DynamicInteger temp = *this;
     *this = *this - 1;
     return temp;
+}
+
+bool operator&&(const DynamicInteger& num1, const DynamicInteger& num2)
+{
+    return num1.boolGetNumber() && num2.boolGetNumber();
+}
+
+bool operator||(const DynamicInteger& num1, const DynamicInteger& num2)
+{
+    return num1.boolGetNumber() || num2.boolGetNumber();
 }

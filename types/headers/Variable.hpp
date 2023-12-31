@@ -38,6 +38,7 @@ public:
     Variable(const double&);
     Variable(const long long&);
     Variable(const char*);
+    Variable(const std::string&);
     Variable(const bool&);
     Variable(const Variable&);
     ~Variable();
@@ -48,14 +49,36 @@ public:
     Variable& toFloat();
     Variable& toString();
     Variable& toBool();
-    friend Variable toBool(const Variable&);
     friend std::ostream& operator<<(std::ostream&, const Variable&);
     friend std::istream& operator>>(std::istream&, Variable&);
+    Variable operator-() const;
+    friend Variable operator+(const Variable&, const Variable&);
+    Variable& operator+=(const Variable&);
+    Variable operator++(int);
+    Variable& operator++();
+    Variable operator--(int);
+    Variable& operator--();
+    friend Variable operator-(const Variable&, const Variable&);
+    Variable& operator-=(const Variable&);
+    friend Variable operator*(const Variable&, const Variable&);
+    Variable& operator*=(const Variable&);
+    friend Variable operator/(const Variable&, const Variable&);
+    Variable& operator/=(const Variable&);
+    friend Variable operator%(const Variable&, const Variable&);
+    Variable& operator%=(const Variable&);
+    bool operator!() const;
+    friend bool operator<(const Variable&, const Variable&);
+    friend bool operator>(const Variable&, const Variable&);
+    friend bool operator<=(const Variable&, const Variable&);
+    friend bool operator>=(const Variable&, const Variable&);
+    friend bool operator==(const Variable&, const Variable&);
+    friend bool operator!=(const Variable&, const Variable&);
 };
 
 Variable toInt(const Variable& = 0);
 Variable toFloat(const Variable& = .0f);
 Variable toString(const Variable& = "");
+Variable toBool(const Variable& = false);
 
 typedef Variable var;
 

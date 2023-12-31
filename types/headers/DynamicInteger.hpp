@@ -42,6 +42,8 @@ public:
     friend DynamicInteger operator%(const DynamicInteger&, const DynamicInteger&);
     DynamicInteger operator-() const;
     bool operator!() const;
+    friend bool operator&&(const DynamicInteger&, const DynamicInteger&);
+    friend bool operator||(const DynamicInteger&, const DynamicInteger&);
     friend bool operator<(const DynamicInteger&, const DynamicInteger&);
     friend bool operator>(const DynamicInteger&, const DynamicInteger&);
     friend bool operator<=(const DynamicInteger&, const DynamicInteger&);

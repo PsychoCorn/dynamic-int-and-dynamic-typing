@@ -1,6 +1,10 @@
 #include "../headers/Variable.hpp"
 #include <string>
 
+#define ERR_MSG_INVALID_OPERANDS "Invalid operands!"
+#define ERR_MSG_INVALID_OPERAND "Invalid operand!"
+#define ERR_MSG_DIVISION_BY_ZERO "Division by zero!" 
+
 Variable::Variable()
 {
     type = VarType::None;
@@ -31,6 +35,12 @@ Variable::Variable(const double& floatValue)
 }
 
 Variable::Variable(const char* strValue)
+{
+    data.stringData = new std::string(strValue);
+    type = VarType::String;
+}
+
+Variable::Variable(const std::string& strValue)
 {
     data.stringData = new std::string(strValue);
     type = VarType::String;
@@ -199,7 +209,7 @@ Variable& Variable::toInt()
         break;
     
     case VarType::Bool:
-        *this = Variable(*(data.boolData) ? 1 : 0);
+        *this = Variable(int(*(data.boolData)));
         break;
 
     case VarType::None:
@@ -225,7 +235,7 @@ Variable toInt(const Variable& obj)
         break;
     
     case VarType::Bool:
-        return Variable(*(obj.getData().boolData) ? 1 : 0);
+        return Variable(int(*(obj.getData().boolData)));
         break;
 
     case VarType::None:
@@ -251,7 +261,7 @@ Variable& Variable::toFloat()
         break;
     
     case VarType::Bool:
-        *this = Variable(*(data.boolData) ? 1.0f : 0.0f);
+        *this = Variable(float(*(data.boolData)));
         break;
 
     case VarType::None:
@@ -277,7 +287,7 @@ Variable toFloat(const Variable& obj)
         break;
     
     case VarType::Bool:
-        return Variable(*(obj.getData().boolData) ? 1.0f : .0f);
+        return Variable(float(*(obj.getData().boolData)));
         break;
 
     case VarType::None:
@@ -340,4 +350,1029 @@ Variable toString(const Variable& obj)
         break;
     }
     return obj;
+}
+
+Variable& Variable::toBool()
+{
+    switch (type)
+    {
+    case VarType::Int:
+        *this = Variable(bool(data.intData->longLongGetNumber()));
+        break;
+
+    case VarType::Float:
+        *this = Variable(bool(*(data.floatData)));
+        break;
+    
+    case VarType::String:
+        *this = Variable((*(data.stringData)) == "" ? false : true);
+        break;
+
+    case VarType::None:
+        *this = Variable(false);
+        break;
+
+    default:
+        break;
+    }
+    return *this;
+}
+
+Variable toBool(const Variable& obj)
+{
+    switch (obj.getType())
+    {
+    case VarType::Int:
+        return Variable(bool(obj.getData().intData->longLongGetNumber()));
+        break;
+
+    case VarType::Float:
+        return Variable(bool(*(obj.getData().floatData)));
+        break;
+    
+    case VarType::String:
+        return Variable((*(obj.getData().stringData)) == "" ? false : true);
+        break;
+
+    case VarType::None:
+        return Variable(false);
+        break;
+
+    default:
+        break;
+    }
+    return obj;
+}
+
+Variable operator+(const Variable& var1, const Variable& var2)
+{
+    switch (var1.type)
+    {
+    case VarType::Int:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return Variable(*(var1.data.intData) + *(var2.data.intData));
+            break;
+        
+        case VarType::Float:
+            return Variable(var1.data.intData->doubleGetNumber() + *(var2.data.floatData));
+            break;
+
+        case VarType::Bool:
+            return Variable(*(var1.data.intData) + dynamic_int(*(var2.data.boolData)));
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+    
+    case VarType::Float:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return Variable(*(var1.data.floatData) + var2.data.intData->doubleGetNumber());
+            break;
+        
+        case VarType::Float:
+            return Variable(*(var1.data.floatData) + *(var2.data.floatData));
+            break;
+
+        case VarType::Bool:
+            return Variable(*(var1.data.floatData) + *(var2.data.boolData));
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+
+    case VarType::String:
+        switch (var2.type)
+        {
+        case VarType::String:
+            return Variable((*(var1.data.stringData) + *(var2.data.stringData)).c_str());
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+
+    case VarType::Bool:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return Variable(*(var1.data.boolData) + *(var2.data.intData));
+            break;
+        
+        case VarType::Float:
+            return Variable(*(var1.data.boolData) + *(var2.data.floatData));
+            break;
+
+        case VarType::Bool:
+            return Variable(*(var1.data.boolData) + *(var2.data.boolData));
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+
+    default:
+        throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+        break;
+    }
+}
+
+Variable& Variable::operator+=(const Variable& other)
+{
+    *this = *this + other;
+    return *this;
+}
+
+Variable operator-(const Variable& var1, const Variable& var2)
+{
+    switch (var1.type)
+    {
+    case VarType::Int:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return Variable(*(var1.data.intData) - *(var2.data.intData));
+            break;
+        
+        case VarType::Float:
+            return Variable(var1.data.intData->doubleGetNumber() - *(var2.data.floatData));
+            break;
+
+        case VarType::Bool:
+            return Variable(*(var1.data.intData) - dynamic_int(*(var2.data.boolData)));
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+    
+    case VarType::Float:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return Variable(*(var1.data.floatData) - var2.data.intData->doubleGetNumber());
+            break;
+        
+        case VarType::Float:
+            return Variable(*(var1.data.floatData) - *(var2.data.floatData));
+            break;
+
+        case VarType::Bool:
+            return Variable(*(var1.data.floatData) - *(var2.data.boolData));
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+
+    case VarType::Bool:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return Variable(*(var1.data.boolData) - *(var2.data.intData));
+            break;
+        
+        case VarType::Float:
+            return Variable(*(var1.data.boolData) - *(var2.data.floatData));
+            break;
+
+        case VarType::Bool:
+            return Variable(*(var1.data.boolData) - *(var2.data.boolData));
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+
+    default:
+        throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+        break;
+    }
+}
+
+Variable& Variable::operator-=(const Variable& other)
+{
+    *this = *this - other;
+    return *this;
+}
+
+Variable Variable::operator-() const
+{
+    switch (type)
+    {
+    case VarType::Int:
+        return Variable(-(*(data.intData)));
+        break;
+
+    case VarType::Float:
+        return Variable(-(*(data.floatData)));
+        break;
+
+    case VarType::Bool:
+        return Variable(-(*(data.boolData)));
+        break;
+    
+    default:
+        throw std::runtime_error(ERR_MSG_INVALID_OPERAND);
+        break;
+    }
+}
+
+bool operator==(const Variable& var1, const Variable& var2)
+{
+    switch (var1.type)
+    {
+    case VarType::Int:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return *(var1.data.intData) == *(var2.data.intData);
+            break;
+
+        case VarType::Float:
+            return var1.data.intData->doubleGetNumber() == *(var2.data.floatData);
+            break;
+        
+        case VarType::Bool:
+            return *(var1.data.intData) == *(var2.data.boolData);
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+    
+    case VarType::Float:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return *(var1.data.floatData) == var2.data.intData->doubleGetNumber();
+            break;
+
+        case VarType::Float:
+            return *(var1.data.floatData) == *(var2.data.floatData);
+            break;
+        
+        case VarType::Bool:
+            return *(var1.data.floatData) == *(var2.data.boolData);
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+
+    case VarType::Bool:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return *(var1.data.boolData) == *(var2.data.intData);
+            break;
+
+        case VarType::Float:
+            return *(var1.data.boolData) == *(var2.data.floatData);
+            break;
+        
+        case VarType::Bool:
+            return *(var1.data.boolData) == *(var2.data.boolData);
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+
+    case VarType::String:
+        switch (var2.type)
+        {
+        case VarType::String:
+            return *(var1.data.stringData) == *(var2.data.stringData);
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+
+    default:
+        throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+        break;
+    }
+}
+
+bool operator<(const Variable& var1, const Variable& var2)
+{
+    switch (var1.type)
+    {
+    case VarType::Int:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return *(var1.data.intData) < *(var2.data.intData);
+            break;
+
+        case VarType::Float:
+            return var1.data.intData->doubleGetNumber() < *(var2.data.floatData);
+            break;
+        
+        case VarType::Bool:
+            return *(var1.data.intData) < *(var2.data.boolData);
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+    
+    case VarType::Float:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return *(var1.data.floatData) < var2.data.intData->doubleGetNumber();
+            break;
+
+        case VarType::Float:
+            return *(var1.data.floatData) < *(var2.data.floatData);
+            break;
+        
+        case VarType::Bool:
+            return *(var1.data.floatData) < *(var2.data.boolData);
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+
+    case VarType::Bool:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return *(var1.data.boolData) < *(var2.data.intData);
+            break;
+
+        case VarType::Float:
+            return *(var1.data.boolData) < *(var2.data.floatData);
+            break;
+        
+        case VarType::Bool:
+            return *(var1.data.boolData) < *(var2.data.boolData);
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+
+    case VarType::String:
+        switch (var2.type)
+        {
+        case VarType::String:
+            return *(var1.data.stringData) < *(var2.data.stringData);
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+
+    default:
+        throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+        break;
+    }
+}
+
+bool operator>(const Variable& var1, const Variable& var2)
+{
+    switch (var1.type)
+    {
+    case VarType::Int:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return *(var1.data.intData) > *(var2.data.intData);
+            break;
+
+        case VarType::Float:
+            return var1.data.intData->doubleGetNumber() > *(var2.data.floatData);
+            break;
+        
+        case VarType::Bool:
+            return *(var1.data.intData) > *(var2.data.boolData);
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+    
+    case VarType::Float:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return *(var1.data.floatData) > var2.data.intData->doubleGetNumber();
+            break;
+
+        case VarType::Float:
+            return *(var1.data.floatData) > *(var2.data.floatData);
+            break;
+        
+        case VarType::Bool:
+            return *(var1.data.floatData) > *(var2.data.boolData);
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+
+    case VarType::Bool:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return *(var1.data.boolData) > *(var2.data.intData);
+            break;
+
+        case VarType::Float:
+            return *(var1.data.boolData) > *(var2.data.floatData);
+            break;
+        
+        case VarType::Bool:
+            return *(var1.data.boolData) > *(var2.data.boolData);
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+
+    case VarType::String:
+        switch (var2.type)
+        {
+        case VarType::String:
+            return *(var1.data.stringData) > *(var2.data.stringData);
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+
+    default:
+        throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+        break;
+    }
+}
+
+bool operator<=(const Variable& var1, const Variable& var2)
+{
+    switch (var1.type)
+    {
+    case VarType::Int:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return *(var1.data.intData) <= *(var2.data.intData);
+            break;
+
+        case VarType::Float:
+            return var1.data.intData->doubleGetNumber() <= *(var2.data.floatData);
+            break;
+        
+        case VarType::Bool:
+            return *(var1.data.intData) <= *(var2.data.boolData);
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+    
+    case VarType::Float:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return *(var1.data.floatData) <= var2.data.intData->doubleGetNumber();
+            break;
+
+        case VarType::Float:
+            return *(var1.data.floatData) <= *(var2.data.floatData);
+            break;
+        
+        case VarType::Bool:
+            return *(var1.data.floatData) <= *(var2.data.boolData);
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+
+    case VarType::Bool:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return *(var1.data.boolData) <= *(var2.data.intData);
+            break;
+
+        case VarType::Float:
+            return *(var1.data.boolData) <= *(var2.data.floatData);
+            break;
+        
+        case VarType::Bool:
+            return *(var1.data.boolData) <= *(var2.data.boolData);
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+
+    case VarType::String:
+        switch (var2.type)
+        {
+        case VarType::String:
+            return *(var1.data.stringData) <= *(var2.data.stringData);
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+
+    default:
+        throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+        break;
+    }
+}
+
+bool operator>=(const Variable& var1, const Variable& var2)
+{
+    switch (var1.type)
+    {
+    case VarType::Int:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return *(var1.data.intData) >= *(var2.data.intData);
+            break;
+
+        case VarType::Float:
+            return var1.data.intData->doubleGetNumber() >= *(var2.data.floatData);
+            break;
+        
+        case VarType::Bool:
+            return *(var1.data.intData) >= *(var2.data.boolData);
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+    
+    case VarType::Float:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return *(var1.data.floatData) >= var2.data.intData->doubleGetNumber();
+            break;
+
+        case VarType::Float:
+            return *(var1.data.floatData) >= *(var2.data.floatData);
+            break;
+        
+        case VarType::Bool:
+            return *(var1.data.floatData) >= *(var2.data.boolData);
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+
+    case VarType::Bool:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return *(var1.data.boolData) >= *(var2.data.intData);
+            break;
+
+        case VarType::Float:
+            return *(var1.data.boolData) >= *(var2.data.floatData);
+            break;
+        
+        case VarType::Bool:
+            return *(var1.data.boolData) >= *(var2.data.boolData);
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+
+    case VarType::String:
+        switch (var2.type)
+        {
+        case VarType::String:
+            return *(var1.data.stringData) >= *(var2.data.stringData);
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+
+    default:
+        throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+        break;
+    }
+}
+
+bool operator!=(const Variable& var1, const Variable& var2)
+{
+    switch (var1.type)
+    {
+    case VarType::Int:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return *(var1.data.intData) != *(var2.data.intData);
+            break;
+
+        case VarType::Float:
+            return var1.data.intData->doubleGetNumber() != *(var2.data.floatData);
+            break;
+        
+        case VarType::Bool:
+            return *(var1.data.intData) != *(var2.data.boolData);
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+    
+    case VarType::Float:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return *(var1.data.floatData) != var2.data.intData->doubleGetNumber();
+            break;
+
+        case VarType::Float:
+            return *(var1.data.floatData) != *(var2.data.floatData);
+            break;
+        
+        case VarType::Bool:
+            return *(var1.data.floatData) != *(var2.data.boolData);
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+
+    case VarType::Bool:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return *(var1.data.boolData) != *(var2.data.intData);
+            break;
+
+        case VarType::Float:
+            return *(var1.data.boolData) != *(var2.data.floatData);
+            break;
+        
+        case VarType::Bool:
+            return *(var1.data.boolData) != *(var2.data.boolData);
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+
+    case VarType::String:
+        switch (var2.type)
+        {
+        case VarType::String:
+            return *(var1.data.stringData) != *(var2.data.stringData);
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+
+    default:
+        throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+        break;
+    }
+}
+
+Variable operator/(const Variable& var1, const Variable& var2)
+{
+    if (var2 == 0)
+    {
+        throw std::runtime_error(ERR_MSG_DIVISION_BY_ZERO);
+    }
+    switch (var1.type)
+    {
+    case VarType::Int:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return Variable(var1.data.intData->doubleGetNumber() / var2.data.intData->doubleGetNumber());
+            break;
+        
+        case VarType::Float:
+            return Variable(var1.data.intData->doubleGetNumber() / *(var2.data.floatData));
+            break;
+
+        case VarType::Bool:
+            return Variable(var1.data.intData->doubleGetNumber() / *(var2.data.boolData));
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+    
+    case VarType::Float:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return Variable(*(var1.data.floatData) / var2.data.intData->doubleGetNumber());
+            break;
+        
+        case VarType::Float:
+            return Variable(*(var1.data.floatData) / *(var2.data.floatData));
+            break;
+
+        case VarType::Bool:
+            return Variable(*(var1.data.floatData) / *(var2.data.boolData));
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+
+    case VarType::Bool:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return Variable(*(var1.data.boolData) / var2.data.intData->doubleGetNumber());
+            break;
+        
+        case VarType::Float:
+            return Variable(*(var1.data.boolData) / *(var2.data.floatData));
+            break;
+
+        case VarType::Bool:
+            return Variable(*(var1.data.boolData) / *(var2.data.boolData));
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+
+    default:
+        throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+        break;
+    }
+}
+
+Variable& Variable::operator/=(const Variable& other)
+{
+    *this = *this / other;
+    return *this;
+}
+
+Variable operator*(const Variable& var1, const Variable& var2)
+{
+    switch (var1.type)
+    {
+    case VarType::Int:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return Variable(*(var1.data.intData) * *(var2.data.intData));
+            break;
+        
+        case VarType::Float:
+            return Variable(var1.data.intData->doubleGetNumber() * *(var2.data.floatData));
+            break;
+
+        case VarType::Bool:
+            return Variable(*(var1.data.intData) * dynamic_int(*(var2.data.boolData)));
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+    
+    case VarType::Float:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return Variable(*(var1.data.floatData) * var2.data.intData->doubleGetNumber());
+            break;
+        
+        case VarType::Float:
+            return Variable(*(var1.data.floatData) * *(var2.data.floatData));
+            break;
+
+        case VarType::Bool:
+            return Variable(*(var1.data.floatData) * *(var2.data.boolData));
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+
+    case VarType::Bool:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return Variable(*(var1.data.boolData) * *(var2.data.intData));
+            break;
+        
+        case VarType::Float:
+            return Variable(*(var1.data.boolData) * *(var2.data.floatData));
+            break;
+
+        case VarType::Bool:
+            return Variable(*(var1.data.boolData) * *(var2.data.boolData));
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+
+    default:
+        throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+        break;
+    }
+}
+
+Variable& Variable::operator*=(const Variable& other)
+{
+    *this = *this * other;
+    return *this;
+}
+
+bool Variable::operator!() const
+{
+    switch (type)
+    {
+    case VarType::Int:
+        return !(*(data.intData));
+        break;
+
+    case VarType::Float:
+        return !(*(data.floatData));
+        break;
+
+    case VarType::Bool:
+        return !(*(data.boolData));
+        break;
+
+    default:
+        throw std::runtime_error(ERR_MSG_INVALID_OPERAND);
+        break;
+    }
+}
+
+Variable operator%(const Variable& var1, const Variable& var2)
+{
+    if (var2 == 0)
+    {
+        throw std::runtime_error(ERR_MSG_DIVISION_BY_ZERO);
+    }
+    switch (var1.type)
+    {
+    case VarType::Int:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return Variable(*(var1.data.intData) %  *(var2.data.intData));
+            break;
+
+        case VarType::Bool:
+            return Variable(*(var1.data.intData) %  *(var2.data.boolData));
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+
+    case VarType::Bool:
+        switch (var2.type)
+        {
+        case VarType::Int:
+            return Variable(*(var1.data.boolData) %  *(var2.data.intData));
+            break;
+
+        case VarType::Bool:
+            return Variable(*(var1.data.boolData) %  *(var2.data.boolData));
+            break;
+
+        default:
+            throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+            break;
+        }
+        break;
+
+    default:
+        throw std::runtime_error(ERR_MSG_INVALID_OPERANDS);
+        break;
+    }
+}
+
+Variable& Variable::operator%=(const Variable& other)
+{
+    *this = *this % other;
+    return *this;
+}
+
+Variable& Variable::operator++()
+{
+    *this = *this + 1;
+    return *this;
+}
+
+Variable Variable::operator++(int)
+{
+    Variable temp = *this;
+    *this = *this + 1;
+    return temp;
+}
+
+Variable& Variable::operator--()
+{
+    *this = *this - 1;
+    return *this;
+}
+
+Variable Variable::operator--(int)
+{
+    Variable temp = *this;
+    *this = *this - 1;
+    return temp;
 }
