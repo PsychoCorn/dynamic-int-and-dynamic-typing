@@ -4,6 +4,12 @@
 #define ERR_MSG_INVALID_OPERANDS "Invalid operands!"
 #define ERR_MSG_INVALID_OPERAND "Invalid operand!"
 #define ERR_MSG_DIVISION_BY_ZERO "Division by zero!" 
+#define ERR_MSG_NOT_STRING "Variable is not string!"
+#define ERR_MSG_INDEX_NOT_INT "Index must be integer!"
+#define ERR_MSG_NEGATIVE_INDEX "Index can't be negative"
+
+namespace kondra
+{
 
 Variable::Variable()
 {
@@ -1115,7 +1121,7 @@ bool operator!=(const Variable& var1, const Variable& var2)
 
 Variable operator/(const Variable& var1, const Variable& var2)
 {
-    if (var2 == 0)
+    if (var2 == Variable(0))
     {
         throw std::runtime_error(ERR_MSG_DIVISION_BY_ZERO);
     }
@@ -1299,7 +1305,7 @@ bool Variable::operator!() const
 
 Variable operator%(const Variable& var1, const Variable& var2)
 {
-    if (var2 == 0)
+    if (var2 == Variable(0))
     {
         throw std::runtime_error(ERR_MSG_DIVISION_BY_ZERO);
     }
@@ -1353,26 +1359,95 @@ Variable& Variable::operator%=(const Variable& other)
 
 Variable& Variable::operator++()
 {
-    *this = *this + 1;
+    *this = *this + Variable(1);
     return *this;
 }
 
 Variable Variable::operator++(int)
 {
     Variable temp = *this;
-    *this = *this + 1;
+    *this = *this + Variable(1);
     return temp;
 }
 
 Variable& Variable::operator--()
 {
-    *this = *this - 1;
+    *this = *this - Variable(1);
     return *this;
 }
 
 Variable Variable::operator--(int)
 {
     Variable temp = *this;
-    *this = *this - 1;
+    *this = *this - Variable(1);
     return temp;
+}
+
+char& Variable::at(const Variable& index)
+{
+    if(type != VarType::String)
+    {
+        throw std::invalid_argument(ERR_MSG_NOT_STRING);
+    }
+    else if(index.getType() != VarType::Int)
+    {
+        throw std::invalid_argument(ERR_MSG_INDEX_NOT_INT);
+    }
+    else if (index < Variable(0))
+    {
+        throw std::invalid_argument(ERR_MSG_NEGATIVE_INDEX);
+    }
+    return data.stringData->at(index.getData().intData->uLongLongGetNumber());
+}
+
+char& Variable::operator[](const Variable& index)
+{
+    return at(index);
+}
+
+Variable::operator long long() const
+{
+    if(type != VarType::Int)
+    {
+        throw std::invalid_argument(ERR_MSG_INVALID_OPERAND);
+    }
+    return data.intData->longLongGetNumber();
+}
+
+Variable::operator unsigned long long() const
+{
+    if(type != VarType::Int)
+    {
+        throw std::invalid_argument(ERR_MSG_INVALID_OPERAND);
+    }
+    return data.intData->uLongLongGetNumber();
+}
+
+Variable::operator bool() const
+{
+    if(type != VarType::Bool)
+    {
+        throw std::invalid_argument(ERR_MSG_INVALID_OPERAND);
+    }
+    return *(data.boolData);
+}
+
+Variable::operator std::string() const
+{
+    if(type != VarType::String)
+    {
+        throw std::invalid_argument(ERR_MSG_INVALID_OPERAND);
+    }
+    return *(data.stringData);
+}
+
+Variable::operator double() const
+{
+    if(type != VarType::Float)
+    {
+        throw std::invalid_argument(ERR_MSG_INVALID_OPERAND);
+    }
+    return *(data.floatData);
+}
+
 }

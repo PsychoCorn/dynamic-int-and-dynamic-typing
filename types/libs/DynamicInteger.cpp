@@ -4,6 +4,9 @@
 #define ERR_MSG_NEGATIVE_SHIFT_VALUE "Negative shift value!"
 #define ERR_MSG_INVALID_STRING_ARG "Invalid string argument!"
 
+namespace kondra
+{
+
 DynamicInteger::DynamicInteger()
 {
     mpz_init(value);
@@ -53,9 +56,14 @@ char* DynamicInteger::strGetNumber() const
     return mpz_get_str(nullptr, 10, value);
 }
 
-long long DynamicInteger::longLongGetNumber(bool isSigned) const
+long long DynamicInteger::longLongGetNumber() const
 {
-    return ((isSigned) ? (mpz_get_si(value)) : (mpz_get_ui(value)));
+    return mpz_get_si(value);
+}
+
+unsigned long long DynamicInteger::uLongLongGetNumber() const
+{
+    return mpz_get_ui(value);
 }
 
 double DynamicInteger::doubleGetNumber() const
@@ -311,4 +319,6 @@ bool operator&&(const DynamicInteger& num1, const DynamicInteger& num2)
 bool operator||(const DynamicInteger& num1, const DynamicInteger& num2)
 {
     return num1.boolGetNumber() || num2.boolGetNumber();
+}
+
 }

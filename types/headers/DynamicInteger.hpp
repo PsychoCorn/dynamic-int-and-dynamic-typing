@@ -4,6 +4,9 @@
 #include <gmp.h>
 #include <iostream>
 
+namespace kondra
+{
+
 class DynamicInteger
 {
 private:
@@ -18,7 +21,8 @@ public:
     ~DynamicInteger();
     char* strGetNumber() const;
     double doubleGetNumber() const;
-    long long longLongGetNumber(bool = true) const;
+    long long longLongGetNumber() const;
+    unsigned long long uLongLongGetNumber() const;
     bool boolGetNumber() const;
     DynamicInteger& operator=(const DynamicInteger&);
     DynamicInteger& operator+=(const DynamicInteger&);
@@ -62,5 +66,7 @@ public:
 std::ostream& operator<<(std::ostream&, const DynamicInteger&);
 
 typedef DynamicInteger dynamic_int;
+
+}
 
 #endif

@@ -5,6 +5,9 @@
 #include <iostream>
 #include <vector>
 
+namespace kondra
+{
+
 union VarData
 {
     dynamic_int* intData;
@@ -49,6 +52,8 @@ public:
     Variable& toFloat();
     Variable& toString();
     Variable& toBool();
+    char& at(const Variable&);
+    char& operator[](const Variable&);
     friend std::ostream& operator<<(std::ostream&, const Variable&);
     friend std::istream& operator>>(std::istream&, Variable&);
     Variable operator-() const;
@@ -73,6 +78,11 @@ public:
     friend bool operator>=(const Variable&, const Variable&);
     friend bool operator==(const Variable&, const Variable&);
     friend bool operator!=(const Variable&, const Variable&);
+    explicit operator long long() const;
+    explicit operator unsigned long long() const;
+    explicit operator std::string() const;
+    explicit operator bool() const;
+    explicit operator double() const;
 };
 
 Variable toInt(const Variable& = 0);
@@ -81,5 +91,7 @@ Variable toString(const Variable& = "");
 Variable toBool(const Variable& = false);
 
 typedef Variable var;
+
+}
 
 #endif

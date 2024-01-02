@@ -3,8 +3,8 @@
 
 int main()
 {
-    var a = -5;
-    std::cout << --a << std::endl;
-    std::cout << a << std::endl;
+    kondra::var n = 6.5f;
+    float s = static_cast<double>(n);
+    std::cout << s << std::endl;
     return 0;
 }
