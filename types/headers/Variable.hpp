@@ -83,6 +83,7 @@ public:
     explicit operator std::string() const;
     explicit operator bool() const;
     explicit operator double() const;
+    explicit operator dynamic_int() const;
 };
 
 Variable toInt(const Variable& = 0);

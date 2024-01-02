@@ -3,8 +3,8 @@
 
 int main()
 {
-    kondra::var n = 6.5f;
-    float s = static_cast<double>(n);
+    kondra::var n = -5;
+    kondra::dynamic_int s = static_cast<kondra::dynamic_int>(n);
     std::cout << s << std::endl;
     return 0;
 }

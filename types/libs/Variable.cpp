@@ -1407,47 +1407,32 @@ char& Variable::operator[](const Variable& index)
 
 Variable::operator long long() const
 {
-    if(type != VarType::Int)
-    {
-        throw std::invalid_argument(ERR_MSG_INVALID_OPERAND);
-    }
-    return data.intData->longLongGetNumber();
+    return kondra::toInt(*this).data.intData->longLongGetNumber();
 }
 
 Variable::operator unsigned long long() const
 {
-    if(type != VarType::Int)
-    {
-        throw std::invalid_argument(ERR_MSG_INVALID_OPERAND);
-    }
-    return data.intData->uLongLongGetNumber();
+    return kondra::toInt(*this).data.intData->uLongLongGetNumber();
 }
 
 Variable::operator bool() const
 {
-    if(type != VarType::Bool)
-    {
-        throw std::invalid_argument(ERR_MSG_INVALID_OPERAND);
-    }
-    return *(data.boolData);
+    return *(kondra::toBool(*this).data.boolData);
 }
 
 Variable::operator std::string() const
 {
-    if(type != VarType::String)
-    {
-        throw std::invalid_argument(ERR_MSG_INVALID_OPERAND);
-    }
-    return *(data.stringData);
+    return *(kondra::toString(*this).data.stringData);
 }
 
 Variable::operator double() const
 {
-    if(type != VarType::Float)
-    {
-        throw std::invalid_argument(ERR_MSG_INVALID_OPERAND);
-    }
-    return *(data.floatData);
+    return *(kondra::toFloat(*this).data.floatData);
+}
+
+Variable::operator dynamic_int() const
+{
+    return *(kondra::toInt(*this).data.intData);
 }
 
 }
